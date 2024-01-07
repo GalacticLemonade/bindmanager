@@ -44,27 +44,29 @@ app.post('/api/get/', (req, res) => {
 })
 
 app.post('/api/finalize/', (req, res) => {
-    const data = fs.readFileSync(location, 'utf8')
+    const data = zoneFile.parse(fs.readFileSync(location, 'utf8'))
 
     data.soa.serial += 1
+
+    fs.writeFileSync(location, zoneFile.generate(data))
 })
 
 app.post('/api/addentry/', (req, res) => {
-    const data = zoneParser.parse(fs.readFileSync(location, 'utf8'))
+    const data = zoneFile.parse(fs.readFileSync(location, 'utf8'))
 
-    var dataType = req.body.type
+    let dataType = req.body.type
 
     if (dataType == "A") {
-        data.a.push({name: req.body.host + '.', ip: req.body.content})
+        data.a.push({name: req.body.host + 'galacticlemon.dev' + '.', ip: req.body.content})
     } else if (dataType == "TXT") {
         data.txt = []
-        data.txt.push({ name: req.body.host + '.', text: req.body.content, ttl: 604800 })
+        data.txt.push({ name: req.body.host  + 'galacticlemon.dev' +  '.', text: req.body.content, ttl: 604800 })
     } else if (dataType == "CNAME") {
         data.cname = []
-        data.cname.push({ name: req.body.host + '.', alias: req.body.content, ttl: 604800 })
+        data.cname.push({ name: req.body.host +  'galacticlemon.dev' +  '.', alias: req.body.content, ttl: 604800 })
     }
 
-    fs.writeFileSync(location, zoneParser.generate(data))
+    fs.writeFileSync(location, zoneFile.generate(data))
     res.send('hi')
 })
 
