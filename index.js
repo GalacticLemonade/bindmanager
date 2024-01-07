@@ -29,6 +29,15 @@ app.post('/api/login/', (req, res) => {
     res.redirect('/login/')
 })
 
+app.post('/api/get/', (req, res) => {
+
+})
+
+app.post('/api/addentry/', (req, res) => {
+    console.log(req.body)
+    res.send('hi')
+})
+
 app.get('/login/', (req, res) => {
     res.sendFile(__dirname + "/login.html")
 })
