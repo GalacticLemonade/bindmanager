@@ -2,7 +2,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import fs from 'node:fs'
-import { makeZoneFile, parseZoneFile } from 'zone-file'; //probably wont actually use this
+import zoneFile from 'dns-zonefile'; //probably wont actually use this
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { exec } from 'node:child_process'
@@ -47,17 +47,9 @@ app.post('/api/finalize/', (req, res) => {
     const data = fs.readFileSync(location, 'utf8')
 
     data.soa.serial += 1
-
-    console.log(makeZoneFile(data))
-    fs.writeFileSync(location, makeZoneFile(data))
 })
 
 app.post('/api/addentry/', (req, res) => {
-    const data = parseZoneFile(fs.readFileSync(location, 'utf8'))
-
-    console.log(data)
-
-    /* this is the weird zoneParser thing which i can't get to work very well
     const data = zoneParser.parse(fs.readFileSync(location, 'utf8'))
 
     var dataType = req.body.type
@@ -74,8 +66,6 @@ app.post('/api/addentry/', (req, res) => {
 
     fs.writeFileSync(location, zoneParser.generate(data))
     res.send('hi')
-
-    */
 })
 
 app.get('/login/', (req, res) => {
