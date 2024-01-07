@@ -1,7 +1,15 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-const fs = require('node:fs')
+import express from 'express'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
+import fs from 'node:fs'
+import zoneParser from 'dns-zonefile';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+var location = __dirname + "/db.galacticlemon.dev"
 
 const app = express()
 
@@ -30,7 +38,14 @@ app.post('/api/login/', (req, res) => {
 })
 
 app.post('/api/get/', (req, res) => {
+    console.log("get list of all the tings")
+    res.send("hi")
+})
 
+app.post('/api/finalize/', (req, res) => {
+    const data = fs.readFileSync(location, 'utf-8')
+
+    console.log(zoneParser.parse(data))
 })
 
 app.post('/api/addentry/', (req, res) => {

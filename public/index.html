@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>manager</title>
+    <script src = "https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <style>
         #recordsList {
             padding: 20px;
@@ -80,29 +81,54 @@
         <br>
         <br>
     </div>
-    <script
-    src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-    integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
-    crossorigin="anonymous"></script>
     <script>
+
+        function validate(input) {
+            var valid = true
+
+            if (!input) {
+                valid = false
+            }
+
+            if (input == "") {
+                valid = false
+            }
+
+            return valid
+        }
+
         function createEntry() {
-            $.post(
-                "/api/addentry/",
-                {
-                    type: "a",
-                    host: "b",
-                    content: "c"
-                }
-            )
+            if (validate($("#hostInputCreation").val()) && validate($("#contentInputCreation").val())) {
+                $.post(
+                    "/api/addentry/",
+                    {
+                        type: $("#typeInputCreation").val(),
+                        host: $("#hostInputCreation").val(),
+                        content: $("#contentInputCreation").val()
+                    }
+                )
+            } else {
+                alert('invalid input')
+            }
         }
 
         function submitAll() {
-            alert('submitall')
+            let ans = confirm("are you sure?")
+
+            if (ans) {
+                $.post(
+                "/api/finalize/",
+                { e: "a"}
+            )
+            }
         }
 
         function hostUpdate() {
             if ($("#hostInputCreation").val() == "") {
                 $("#creationNameField").text("[host]")
+                return
+            } else if ($("#hostInputCreation").val() == "@") {
+                $("#creationNameField").text("galacticlemon.dev")
                 return
             }
 
