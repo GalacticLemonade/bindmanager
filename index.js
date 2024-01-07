@@ -2,9 +2,10 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import fs from 'node:fs'
-import zoneParser from 'dns-zonefile';
+import { makeZoneFile, parseZoneFile } from 'zone-file'; //probably wont actually use this
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { exec } from 'node:child_process'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,14 +44,38 @@ app.post('/api/get/', (req, res) => {
 })
 
 app.post('/api/finalize/', (req, res) => {
-    const data = fs.readFileSync(location, 'utf-8')
+    const data = fs.readFileSync(location, 'utf8')
 
-    console.log(zoneParser.parse(data))
+    data.soa.serial += 1
+
+    console.log(makeZoneFile(data))
+    fs.writeFileSync(location, makeZoneFile(data))
 })
 
 app.post('/api/addentry/', (req, res) => {
-    console.log(req.body)
+    const data = parseZoneFile(fs.readFileSync(location, 'utf8'))
+
+    console.log(data)
+
+    /* this is the weird zoneParser thing which i can't get to work very well
+    const data = zoneParser.parse(fs.readFileSync(location, 'utf8'))
+
+    var dataType = req.body.type
+
+    if (dataType == "A") {
+        data.a.push({name: req.body.host + '.', ip: req.body.content})
+    } else if (dataType == "TXT") {
+        data.txt = []
+        data.txt.push({ name: req.body.host + '.', text: req.body.content, ttl: 604800 })
+    } else if (dataType == "CNAME") {
+        data.cname = []
+        data.cname.push({ name: req.body.host + '.', alias: req.body.content, ttl: 604800 })
+    }
+
+    fs.writeFileSync(location, zoneParser.generate(data))
     res.send('hi')
+
+    */
 })
 
 app.get('/login/', (req, res) => {
