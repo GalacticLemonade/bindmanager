@@ -49,6 +49,7 @@ app.post('/api/finalize/', (req, res) => {
     data.soa.serial += 1
 
     fs.writeFileSync(location, zoneFile.generate(data))
+    res.send('ok')
 })
 
 app.post('/api/addentry/', (req, res) => {
@@ -57,17 +58,17 @@ app.post('/api/addentry/', (req, res) => {
     let dataType = req.body.type
 
     if (dataType == "A") {
-        data.a.push({name: req.body.host + 'galacticlemon.dev' + '.', ip: req.body.content})
+        data.a.push({name: req.body.host + '.galacticlemon.dev' + '.', ip: req.body.content})
     } else if (dataType == "TXT") {
         data.txt = []
-        data.txt.push({ name: req.body.host  + 'galacticlemon.dev' +  '.', text: req.body.content, ttl: 604800 })
+        data.txt.push({ name: req.body.host  + '.galacticlemon.dev' +  '.', txt: req.body.content })
     } else if (dataType == "CNAME") {
         data.cname = []
-        data.cname.push({ name: req.body.host +  'galacticlemon.dev' +  '.', alias: req.body.content, ttl: 604800 })
+        data.cname.push({ name: req.body.host +  '.galacticlemon.dev' +  '.', alias: req.body.content })
     }
 
     fs.writeFileSync(location, zoneFile.generate(data))
-    res.send('hi')
+    res.send('ok')
 })
 
 app.get('/login/', (req, res) => {
